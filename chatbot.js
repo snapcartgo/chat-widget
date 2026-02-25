@@ -90,23 +90,32 @@
       addMessage("You", userMessage);
 
       fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          message: userMessage,
-          bot_id: botId,
-          session_id: sessionId
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        addMessage("Bot", data.reply);
-      })
-      .catch(err => {
-        addMessage("Bot", "Error connecting to server.");
-      });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    message: userMessage,
+    bot_id: botId,
+    session_id: sessionId
+  })
+})
+.then(res => res.json())
+.then(data => {
+  console.log("Server response:", data);
+
+  const botReply =
+    data.output ||
+    data.message ||
+    data.reply ||
+    "No response from server";
+
+  addMessage("Bot", botReply);
+})
+.catch(err => {
+  console.error(err);
+  addMessage("Bot", "Error connecting to server.");
+});
 
     }
   });
